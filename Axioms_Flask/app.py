@@ -32,6 +32,53 @@ private_api = Blueprint("private_api", __name__)
 def api_private():
     return jsonify({'message': 'All good. You are authenticated!'})
 
+from axioms_flask.decorators import has_valid_access_token, has_required_roles
+
+role_api = Blueprint("role_api", __name__)
+
+@role_api.route("/role", methods=["GET", "POST", "PATCH", "DELETE"])
+@has_valid_access_token
+@has_required_roles(["sample:role"])
+    if request.method == 'POST':
+        return jsonify({"message": "Sample created."})
+    if request.method == 'PATCH':
+        return jsonify({"message": "Sample updated."})
+    if request.method == 'GET':
+        return jsonify({"message": "Sample read."})
+    if request.method == 'DELETE':
+        return jsonify({"message": "Sample deleted."})
+
+
+from axioms_flask.decorators import has_valid_access_token, has_required_permissions
+
+permission_api = Blueprint("permission_api", __name__)
+
+@permission_api.route("/permission", methods=["POST"])
+@has_valid_access_token
+@has_required_permissions(["sample:create"])
+def sample_create():
+    return jsonify({"message": "Sample created."})
+
+
+@permission_api.route("/permission", methods=["PATCH"])
+@has_valid_access_token
+@has_required_permissions(["sample:update"])
+def sample_update():
+    return jsonify({"message": "Sample updated."})
+
+
+@permission_api.route("/permission", methods=["GET"])
+@has_valid_access_token
+@has_required_permissions(["sample:read"])
+def sample_read():
+    return jsonify({"message": "Sample read."})
+
+
+@permission_api.route("/permission", methods=["DELETE"])
+@has_valid_access_token
+@has_required_permissions(["sample:delete"])
+def sample_delete():
+    return jsonify({"message": "Sample deleted."})
 
 
 #from flask import Flask
